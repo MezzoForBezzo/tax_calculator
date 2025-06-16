@@ -2,6 +2,10 @@
 
 module Services
   class TaxCalculator
+    def self.call(income:, in_cents: false)
+      new(income:, in_cents: in_cents).call
+    end
+
     def initialize(income:, in_cents: false)
       @income_in_cents = in_cents ? income.to_d : Monetize.parse(income).cents
       @total_income_tax = 0
@@ -28,7 +32,7 @@ module Services
         end
       end.compact.sum
 
-      total_income_tax = Money.from_cents(total_income_tax).format
+      @total_income_tax = Money.from_cents(total_income_tax).format
     end
 
     private
