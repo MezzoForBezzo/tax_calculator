@@ -12,21 +12,29 @@ module Services
     end
 
     def call
-      total_income_tax = Util::TaxBrackets::NZ_TAX_BRACKETS.map do |tax_bracket|
-        unless tax_bracket.range_in_cents.begin > income_in_cents
-          income_within_bracket(tax_bracket.range_in_cents).size * tax_bracket.tax_rate
-        end
-      end.compact.sum
-
-      @total_income_tax = Money.from_cents(total_income_tax).format
+      @total_income_tax = Money.from_cents(total_income_tax_calculator).format
     end
 
     private
 
     attr_accessor :income_in_cents, :total_income_tax
 
+    def total_income_tax_calculator
+      id = Util::Nz::TaxBrackets.find_id(income_in_cents)
+
+      Util::Nz::TaxBrackets::TAX_BRACKETS.reduce(0) do |summed_value, tax_bracket|
+        if tax_bracket.tax_bracket_id < id
+          summed_value += (tax_bracket.range_in_cents.size * tax_bracket.tax_rate)
+        elsif tax_bracket.tax_bracket_id == id
+          summed_value += (income_within_bracket(tax_bracket.range_in_cents).size * tax_bracket.tax_rate)
+        end
+
+        summed_value
+      end
+    end
+
     def income_within_bracket(bracket_in_cents)
-      bracket_in_cents.begin..([ income_in_cents, bracket_in_cents.end ].min)
+      bracket_in_cents.begin..income_in_cents
     end
   end
 end
