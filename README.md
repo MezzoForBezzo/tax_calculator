@@ -58,3 +58,20 @@ calculator.call
 calculator
 => #<Services::TaxCalculator:0x00000001264117d0 @income_in_cents=1000000, @total_income_tax="$1,050.00">
 ```
+
+# Post tech Interview
+
+Ideally there are still things I would like to tidy up which I may do at a later date.
+
+We discussed that different countries/states/jurisdictions can have different tax laws. Something I was weighing up was the idea of a ruleset or yml file as a look up. Parsing in a jurisdiction and using a specific jurisdiction set of brackets/rules is probably the way to go? Certain tax is calculated pre/post income tax so accounting for further jurisdiction based calculators (mortgage/student loan/acc etc)
+
+Todo:
+  - Another refactor of the main calculator to flesh out the concept of jurisdictions
+  - Add jurisdiction based logic and definitions
+  - Add a controller so it can actually be used
+  - Add a front end using hotwire/turbo
+  - Add a presenter/formatter to handle user input
+  - Add further tax logic such as pre post income tax calculators
+  - Add users/permissions
+    - Save calculations to refer back to?
+  - Not have a coffee with my ADHD meds....
